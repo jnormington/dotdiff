@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe DotDiff::Snapshot do
-  subject { DotDiff::Snapshot.new('CancellationDialog','testy') }
+  let(:options) {{ filename: 'CancellationDialog', subdir: 'testy', page: MockPage.new }}
+  subject { DotDiff::Snapshot.new(options) }
 
   before do
     allow(Dir).to receive(:tmpdir).and_return('/tmp/T')
@@ -41,6 +42,14 @@ RSpec.describe DotDiff::Snapshot do
 
     it 'returns the name without the extension' do
       expect(subject.base_filename(false)).to eq 'CancellationDialog'
+    end
+  end
+
+  describe '#capture_from_browser' do
+    it 'calls save_screenshot with temporary location' do
+      expect(subject).to receive(:fullscreen_file).and_return('/tmp/T/basefile.png').once
+      expect(subject.page).to receive(:save_screenshot).with('/tmp/T/basefile.png').once
+      subject.capture_from_browser
     end
   end
 end

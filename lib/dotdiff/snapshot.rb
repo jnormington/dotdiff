@@ -2,14 +2,16 @@ module DotDiff
   class Snapshot
     include Image::Cropper
 
-    attr_reader :base_filename, :subdir, :rootdir
+    attr_reader :base_filename, :subdir, :rootdir, :page
 
     IMAGE_EXT = 'png'.freeze
 
-    def initialize(base_filename, subdir = nil, rootdir = DotDiff.image_store_path)
-      @base_filename = base_filename
-      @subdir = subdir.to_s
-      @rootdir = rootdir.to_s
+    def initialize(options = {})
+      opts = { rootdir: DotDiff.image_store_path }.merge(Hash(options))
+      @base_filename = opts[:filename]
+      @subdir = opts[:subdir].to_s
+      @rootdir = opts[:rootdir].to_s
+      @page = opts[:page]
     end
 
     def fullscreen_file
@@ -36,6 +38,16 @@ module DotDiff
       end
 
       rtn_file
+    end
+
+    def capture_from_browser(hide_and_show = true, element_handler = ElementHandler.new(page))
+      if hide_and_show
+        element_handler.hide
+        page.save_screenshot(fullscreen_file)
+        element_handler.show
+      else
+        page.save_screenshot(fullscreen_file)
+      end
     end
   end
 end
