@@ -8,6 +8,8 @@ require 'dotdiff/image'
 require 'dotdiff/element_handler'
 
 require 'dotdiff/element_meta'
+require 'dotdiff/image/cropper'
+require 'dotdiff/snapshot'
 
 module DotDiff
  class << self
