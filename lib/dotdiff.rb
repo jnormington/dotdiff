@@ -7,6 +7,8 @@ require 'dotdiff/command_wrapper'
 require 'dotdiff/image'
 require 'dotdiff/element_handler'
 
+require 'dotdiff/element_meta'
+
 module DotDiff
  class << self
    attr_accessor :perceptual_diff_bin, :resave_base_image, :failure_image_path,
