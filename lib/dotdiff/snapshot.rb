@@ -49,5 +49,25 @@ module DotDiff
         page.save_screenshot(fullscreen_file)
       end
     end
+
+    def resave_cropped_file
+      resave_base_file(:cropped)
+    end
+
+    def resave_fullscreen_file
+      resave_base_file(:fullscreen)
+    end
+
+    private
+
+    def resave_base_file(version)
+      FileUtils.mkdir_p(File.join(DotDiff.image_store_path, subdir))
+
+      if !File.exists?(basefile) || DotDiff.overwrite_on_resave
+        FileUtils.mv(self.send("#{version}_file"), basefile, force: true)
+      else
+        FileUtils.mv(self.send("#{version}_file"), "#{basefile}.r2", force: true)
+      end
+    end
   end
 end

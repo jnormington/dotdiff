@@ -52,4 +52,64 @@ RSpec.describe DotDiff::Snapshot do
       subject.capture_from_browser
     end
   end
+
+  describe '#resave_cropped_file' do
+    it 'calls resave_base_file' do
+      expect(subject).to receive(:resave_base_file).with(:cropped).once
+      subject.resave_cropped_file
+    end
+  end
+
+  describe '#resave_fullscreen_file' do
+    it 'calls resave_base_file' do
+      expect(subject).to receive(:resave_base_file).with(:fullscreen).once
+      subject.resave_fullscreen_file
+    end
+  end
+
+  %w(fullscreen cropped).each do |version|
+    describe "#resave_base_file with #{version}" do
+      let(:base_file) { '/home/se/images/testy/CancellationDialog.png' }
+      let(:fullscreen_file) { '/tmp/T/testy/CancellationDialog.png' }
+      let(:cropped_file) { '/tmp/T/testy/CancellationDialog_cropped.png' }
+      let(:opts) {{ force: true }}
+
+      before do
+        allow(File).to receive(:exists?).and_return(true)
+        expect(FileUtils).to receive(:mkdir_p).with(DotDiff.image_store_path + '/testy')
+      end
+
+      it 'calls mkdir_p to ensure subdir exist' do
+        subject.send(:resave_base_file, version)
+      end
+
+      context 'when overwrite on resave' do
+        before { DotDiff.overwrite_on_resave = true }
+
+        it 'calls FileUtils with force option' do
+          allow(subject).to receive(:capture_from_browser).and_return(subject.fullscreen_file)
+          expect(FileUtils).to receive(:mv).with(self.send("#{version}_file"), base_file, opts)
+
+          subject.send(:resave_base_file, version)
+        end
+      end
+
+      context 'when overwrite on resave false' do
+        before { DotDiff.overwrite_on_resave = false }
+
+        let(:altered_file) { "#{base_file}.r2" }
+
+        it 'calls FileUtils with an altered file name destination' do
+          expect(FileUtils).to receive(:mv).with(self.send("#{version}_file"), altered_file, opts)
+          subject.send(:resave_base_file, version)
+        end
+
+        it 'creates base_file without r2 when original file doesnt exist' do
+          allow(File).to receive(:exists?).and_return(false)
+          expect(FileUtils).to receive(:mv).with(self.send("#{version}_file"), base_file, opts)
+          subject.send(:resave_base_file, version)
+        end
+      end
+    end
+  end
 end
