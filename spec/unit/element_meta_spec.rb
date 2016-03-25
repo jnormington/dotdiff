@@ -1,13 +1,5 @@
 require 'spec_helper'
 
-class MockPage
-  def evaluate_script(cmd); end
-end
-
-class MockElement
-  def path; end
-end
-
 RSpec.describe DotDiff::ElementMeta do
   subject { DotDiff::ElementMeta.new(mock_page, mock_elem) }
 

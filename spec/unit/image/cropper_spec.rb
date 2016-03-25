@@ -17,14 +17,6 @@ class MockChunkyPNG
   def save(file);  end
 end
 
-class MockElement
-  def path; end
-end
-
-class MockPage
-  def evaluate_script(cmd); end
-end
-
 RSpec.describe DotDiff::Image::Cropper do
   subject { Snappy.new }
 
