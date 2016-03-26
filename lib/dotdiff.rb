@@ -4,8 +4,12 @@ require 'shellwords'
 require 'tmpdir'
 
 require 'dotdiff/command_wrapper'
-require 'dotdiff/image'
 require 'dotdiff/element_handler'
+
+require 'dotdiff/element_meta'
+require 'dotdiff/image/cropper'
+require 'dotdiff/snapshot'
+require 'dotdiff/comparer'
 
 module DotDiff
  class << self
