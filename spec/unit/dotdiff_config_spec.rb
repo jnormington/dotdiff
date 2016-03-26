@@ -67,7 +67,6 @@ RSpec.describe 'Dotdiff configuration' do
 
       it 'returns the capybara default max wait time' do
         expect(Capybara).to receive(:default_max_wait_time).and_return(8).once
-
         expect(subject.max_wait_time).to eq 8
       end
     end
