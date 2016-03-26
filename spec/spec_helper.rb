@@ -1,4 +1,5 @@
 require 'dotdiff'
+require 'capybara/dsl'
 
 require_relative './helper/mocks_helper'
 

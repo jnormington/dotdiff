@@ -14,7 +14,8 @@ require 'dotdiff/comparer'
 module DotDiff
  class << self
    attr_accessor :perceptual_diff_bin, :resave_base_image, :failure_image_path,
-                 :image_store_path, :overwrite_on_resave, :js_elements_to_hide
+                 :image_store_path, :overwrite_on_resave, :js_elements_to_hide,
+                 :max_wait_time
 
    def configure
      yield self
@@ -27,5 +28,9 @@ module DotDiff
    def js_elements_to_hide
      @js_elements_to_hide ||= []
    end
- end
+
+    def max_wait_time
+      @max_wait_time || Capybara.default_max_wait_time
+    end
+  end
 end

@@ -84,9 +84,12 @@ RSpec.describe 'DotDiff::ElementHandler' do
     end
   end
 
-  describe '#element_hidden?' do
+  describe '#element_exists?' do
+    before { allow(DotDiff).to receive(:max_wait_time).and_return(3) }
     it 'calls find with xpath' do
-      expect_any_instance_of(MockDriver).to receive(:find).with(:xpath, '//nav', wait: 5).once
+      expect_any_instance_of(MockDriver).to receive(:find)
+        .with(:xpath, '//nav', wait: 3, visible: :all).once
+
       subject.element_exists?('//nav')
     end
   end
