@@ -7,7 +7,7 @@ class MockDriver
   def evaluate_script(str)
   end
 
-  def find(x,f, args)
+  def all(x, f, args)
   end
 end
 
@@ -23,17 +23,21 @@ RSpec.describe 'DotDiff::ElementHandler' do
 
   describe '#hide' do
     let(:command1) do
-      "document.evaluate(\"//nav[@class='master-opt']\", document, null"\
-      ", XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.visibility = 'hidden'"
+      "var elem; while (elem = document.evaluate(\"//nav[@class='master-opt']"\
+        "[not(contains(@style, 'visibility'))]\", document, "\
+        'null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null).iterateNext()) '\
+        "{ elem.style.visibility = 'hidden'; }"
     end
 
     let(:command2) do
-      "document.evaluate(\"id('user-links')\", document, null"\
-      ", XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.visibility = 'hidden'"
+      "var elem; while (elem = document.evaluate(\"id('user-links')"\
+        "[not(contains(@style, 'visibility'))]\", document, "\
+        'null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null).iterateNext()) '\
+        "{ elem.style.visibility = 'hidden'; }"
     end
 
     it 'calls execute_script setting the visibility to hidden' do
-      allow(subject).to receive(:element_exists?).and_return(true)
+      allow(subject).to receive(:elements_exists?).and_return(true)
 
       expect_any_instance_of(MockDriver).to receive(:execute_script).with(command1).once
       expect_any_instance_of(MockDriver).to receive(:execute_script).with(command2).once
@@ -42,7 +46,7 @@ RSpec.describe 'DotDiff::ElementHandler' do
     end
 
     it 'doesnt call the set visibility when element doesnt exist' do
-      allow(subject).to receive(:element_exists?).and_return(false)
+      allow(subject).to receive(:elements_exists?).and_return(false)
 
       expect_any_instance_of(MockDriver).not_to receive(:execute_script)
       expect_any_instance_of(MockDriver).not_to receive(:execute_script)
@@ -53,17 +57,21 @@ RSpec.describe 'DotDiff::ElementHandler' do
 
   describe '#show' do
     let(:command1) do
-      "document.evaluate(\"//nav[@class='master-opt']\", document, null"\
-      ", XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.visibility = ''"
+      "var elem; while (elem = document.evaluate(\"//nav[@class='master-opt']"\
+        "[contains(@style, 'visibility: hidden')]\", document, "\
+        'null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null).iterateNext()) '\
+        "{ elem.style.visibility = ''; }"
     end
 
     let(:command2) do
-      "document.evaluate(\"id('user-links')\", document, null"\
-      ", XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.visibility = ''"
+      "var elem; while (elem = document.evaluate(\"id('user-links')"\
+        "[contains(@style, 'visibility: hidden')]\", document, "\
+        'null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null).iterateNext()) '\
+        "{ elem.style.visibility = ''; }"
     end
 
     it 'calls execute_script when setting the visibility to show' do
-      allow(subject).to receive(:element_exists?).and_return(true)
+      allow(subject).to receive(:elements_exists?).and_return(true)
 
       expect_any_instance_of(MockDriver).to receive(:execute_script).with(command1).once
       expect_any_instance_of(MockDriver).to receive(:execute_script).with(command2).once
@@ -84,13 +92,28 @@ RSpec.describe 'DotDiff::ElementHandler' do
     end
   end
 
-  describe '#element_exists?' do
+  describe '#elements_exists?' do
     before { allow(DotDiff).to receive(:max_wait_time).and_return(3) }
-    it 'calls find with xpath' do
-      expect_any_instance_of(MockDriver).to receive(:find)
-        .with(:xpath, '//nav', wait: 3, visible: :all).once
 
-      subject.element_exists?('//nav')
+    it 'calls all with xpath' do
+      expect_any_instance_of(MockDriver).to receive(:all)
+        .with(:xpath, '//nav', wait: 3, visible: :all)
+        .once
+        .and_return([])
+
+      subject.elements_exists?('//nav')
+    end
+
+    it 'returns true when there are elements found' do
+      expect_any_instance_of(MockDriver).to receive(:all).and_return([1])
+
+      expect(subject.elements_exists?('//nav')).to be true
+    end
+
+    it 'returns false when there are no elements found' do
+      expect_any_instance_of(MockDriver).to receive(:all).and_return([])
+
+      expect(subject.elements_exists?('//nav')).to be false
     end
   end
 end
