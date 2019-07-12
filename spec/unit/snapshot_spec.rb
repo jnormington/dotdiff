@@ -79,7 +79,7 @@ RSpec.describe DotDiff::Snapshot do
     it 'calls save_screenshot with temporary location' do
       expect(subject).to receive(:fullscreen_file).and_return('/tmp/T/basefile.png').once
       expect(subject.page).to receive(:save_screenshot).with('/tmp/T/basefile.png').once
-      subject.capture_from_browser
+      subject.capture_from_browser(true)
     end
 
     context 'use_custom_screenshot is true' do
@@ -88,7 +88,7 @@ RSpec.describe DotDiff::Snapshot do
 
       it 'returns fullscreen_file path when use_custom_screenshot is true' do
         expect(subject.page).to receive(:save_screenshot).with('/tmp/T/basefile.png').exactly(0).times
-        expect(subject.capture_from_browser).to eq '/somedir/file.png'
+        expect(subject.capture_from_browser(true)).to eq '/somedir/file.png'
       end
     end
   end
@@ -127,7 +127,7 @@ RSpec.describe DotDiff::Snapshot do
         before { DotDiff.overwrite_on_resave = true }
 
         it 'calls FileUtils with force option' do
-          allow(subject).to receive(:capture_from_browser).and_return(subject.fullscreen_file)
+          allow(subject).to receive(:capture_from_browser).with(true).and_return(subject.fullscreen_file)
           expect(FileUtils).to receive(:mv).with(self.send("#{version}_file"), base_file, opts)
 
           subject.send(:resave_base_file, version)

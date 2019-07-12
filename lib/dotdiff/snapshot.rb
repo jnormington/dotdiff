@@ -54,10 +54,12 @@ module DotDiff
       File.join(failure_path, "#{base_filename(false)}.diff.#{IMAGE_EXT}")
     end
 
-    def capture_from_browser(hide_and_show = true, element_handler = ElementHandler.new(page))
+    def capture_from_browser(hide_and_show)
       return fullscreen_file if use_custom_screenshot
 
       if hide_and_show
+        element_handler = ElementHandler.new(page)
+
         element_handler.hide
         page.save_screenshot(fullscreen_file)
         element_handler.show

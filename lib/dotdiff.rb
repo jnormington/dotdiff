@@ -16,7 +16,7 @@ module DotDiff
   class << self
     attr_accessor :resave_base_image, :failure_image_path,
       :image_store_path, :overwrite_on_resave, :xpath_elements_to_hide,
-      :max_wait_time
+      :hide_elements_on_non_full_screen_screenshot, :max_wait_time
 
     attr_writer :image_magick_options, :pixel_threshold, :image_magick_diff_bin
 
@@ -30,6 +30,10 @@ module DotDiff
 
     def xpath_elements_to_hide
       @xpath_elements_to_hide ||= []
+    end
+
+    def hide_elements_on_non_full_screen_screenshot
+      @hide_elements_on_non_full_screen_screenshot ||= false
     end
 
     def image_magick_options
