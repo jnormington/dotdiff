@@ -37,18 +37,27 @@ RSpec.describe DotDiff::Image::Cropper do
 
     before do
       allow(element).to receive(:rectangle).and_return(rectangle)
-      allow(rectangle).to receive(:rect).and_return(
-        {'top' => 2, 'left' => 1, 'height' => 4, 'width' => 3}
-      )
-    end
 
-    it 'calls load_image crop and save' do
       expect(subject).to receive(:load_image).with('/home/se/full.png').and_return(mock_png).once
       expect(subject).to receive(:width).with(element, mock_png).and_return(13).once
       expect(subject).to receive(:height).with(element, mock_png).and_return(14).once
 
       expect(mock_png).to receive(:crop!).with(1,2,13,14).once
       expect(mock_png).to receive(:write).with('/tmp/T/cropped.png').once
+    end
+
+    it 'calls load_image crop and save' do
+      allow(rectangle).to receive(:rect).and_return(
+        {'top' => 2, 'left' => 1, 'height' => 4, 'width' => 3}
+      )
+
+      subject.crop_and_resave(element)
+    end
+
+    it 'rounds down the x and y values received from the browser' do
+      allow(rectangle).to receive(:rect).and_return(
+        {'top' => 2.3, 'left' => 1.7, 'height' => 4.5, 'width' => 3.6}
+      )
 
       subject.crop_and_resave(element)
     end

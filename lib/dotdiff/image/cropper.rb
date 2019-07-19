@@ -6,8 +6,8 @@ module DotDiff
       def crop_and_resave(element)
         image = load_image(fullscreen_file)
         image.crop!(
-          element.rectangle.x,
-          element.rectangle.y,
+          element.rectangle.x.floor,
+          element.rectangle.y.floor,
           width(element, image),
           height(element, image)
         )
