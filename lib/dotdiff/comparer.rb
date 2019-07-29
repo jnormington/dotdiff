@@ -21,7 +21,7 @@ module DotDiff
     private
 
     def compare_element(element_meta = ElementMeta.new(page, element))
-      snapshot.capture_from_browser(false, nil)
+      snapshot.capture_from_browser(DotDiff.hide_elements_on_non_full_screen_screenshot)
       snapshot.crop_and_resave(element_meta)
 
       if !File.exists?(snapshot.basefile)
@@ -33,7 +33,7 @@ module DotDiff
     end
 
     def compare_page
-      snapshot.capture_from_browser
+      snapshot.capture_from_browser(true)
 
       if !File.exists?(snapshot.basefile)
         snapshot.resave_fullscreen_file

@@ -53,7 +53,9 @@ RSpec.describe DotDiff::Comparer do
 
     context 'file exists' do
       it 'calls compare with cropped file location' do
-        expect(snapshot).to receive(:capture_from_browser).with(false,nil).once
+        expect(DotDiff).to receive(:hide_elements_on_non_full_screen_screenshot).and_return(true)
+
+        expect(snapshot).to receive(:capture_from_browser).with(true).once
         expect(snapshot).to receive(:crop_and_resave).with(element_meta).once
         expect(File).to receive(:exists?).with(snapshot.basefile).and_return(true)
         expect(subject).to receive(:compare).with(
@@ -66,7 +68,9 @@ RSpec.describe DotDiff::Comparer do
 
     context 'file doesnt exist' do
       it 'calls resave_cropped_file and returns true result' do
-        expect(snapshot).to receive(:capture_from_browser).with(false, nil).once
+        expect(DotDiff).to receive(:hide_elements_on_non_full_screen_screenshot).and_return(false)
+
+        expect(snapshot).to receive(:capture_from_browser).with(false).once
         expect(snapshot).to receive(:crop_and_resave).with(element_meta).once
         expect(File).to receive(:exists?).with(snapshot.basefile).and_return(false)
         expect(snapshot).to receive(:resave_cropped_file).once
@@ -81,7 +85,9 @@ RSpec.describe DotDiff::Comparer do
   describe '#compare_page' do
     context 'file exists' do
       it 'calls compare with fullscreen file location' do
-        expect(snapshot).to receive(:capture_from_browser).once
+        expect(DotDiff).not_to receive(:hide_elements_on_non_full_screen_screenshot)
+
+        expect(snapshot).to receive(:capture_from_browser).with(true).once
         expect(File).to receive(:exists?).with(snapshot.basefile).and_return(true)
         expect(subject).to receive(:compare).with(
           snapshot.fullscreen_file).and_return([false, 'FAIL: haha']
@@ -93,7 +99,9 @@ RSpec.describe DotDiff::Comparer do
 
     context 'file doesnt exist' do
       it 'calls resave_fullscreen_file and returns true result' do
-        expect(snapshot).to receive(:capture_from_browser).once
+        expect(DotDiff).not_to receive(:hide_elements_on_non_full_screen_screenshot)
+
+        expect(snapshot).to receive(:capture_from_browser).with(true).once
         expect(snapshot).to receive(:resave_fullscreen_file).once
         expect(File).to receive(:exists?).with(snapshot.basefile).and_return(false)
 
