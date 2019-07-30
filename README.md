@@ -57,7 +57,6 @@ DotDiff.configure do |config|
   config.xpath_elements_to_hide = ["id('main')"]
   config.hide_elements_on_non_full_screen_screenshot = true
   config.failure_image_path = File.join('/home', 'user', 'failure_comparisions')
-  config.max_wait_time = 2
 end
 ```
 
@@ -86,7 +85,6 @@ The only difference for the element specific is passing a specific element in th
 | xpath_elements_to_hide | When taking full page screenshots it will hide elements specified that might change each time and re-shows them after the screenshot.  It doesn't use this option for taking screenshots of specific elements.                                                                                                                                                                                                                                      | ["id('main')", "//div[contains(@class, 'formy'])[1]"] | []                             | No       |
 | hide_elements_on_non_full_screen_screenshot | When taking non full page screenshots whether to also hide elements using `xpath_elements_to_hide` or not hide anything at all                                                                                    | true | false                             | No       |
 | failure_image_path     | When a comparison occurs and the perceptual_diff binary returns a failure with the message. It will dump the new image taken for comparison to this directory.  If not supplied it will not move the images from the temporary location that it is generated at.                                                                                                                                                                                    | File.join('/home', 'user','failures')                 | nil                            | No       |
-| max_wait_time          | This is similar to the Capybara#default_max_wait_time if you have a high value such as 10, as its possible that the  global xpath_elements_to_hide might not always exist it will wait the full time - therefore you can drop it for the hiding and showing of the elements.  In this example it would wait up 20 seconds in total 10 for hiding and 10 seconds for re-showing - that is if the element isn't even going to be present on the page. | 2                                                     | Capybara#default_max_wait_time | No       |
 | pixel_threshold       |  This validates the output from compare is within your specified threshold    | 120  | 100  | No      |
 | image_magick_options  |  This allows you to pass some custom options to image magick    | '-fuzz 10% -metric RSME'  | '-fuzz 5% -metric AE'  | No      |
 

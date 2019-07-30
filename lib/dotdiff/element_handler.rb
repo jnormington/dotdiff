@@ -9,13 +9,13 @@ module DotDiff
 
     def hide
       elements.each do |xpath|
-        driver.execute_script(script(xpath, 'hidden')) if elements_exists?(xpath)
+        driver.execute_script(script(xpath, 'hidden'))
       end
     end
 
     def show
       elements.each do |xpath|
-        driver.execute_script(script(xpath, '')) if elements_exists?(xpath)
+        driver.execute_script(script(xpath, ''))
       end
     end
 
@@ -31,10 +31,6 @@ module DotDiff
       "var elem; while (elem = document.evaluate(\"#{xpath}\", document, "\
         'null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null).iterateNext()) '\
         "{ elem.style.visibility = '#{visibility}'; }"
-    end
-
-    def elements_exists?(xpath)
-      driver.all(:xpath, xpath, wait: DotDiff.max_wait_time, visible: :all).any?
     end
 
     def elements
