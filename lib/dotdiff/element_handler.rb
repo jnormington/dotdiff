@@ -9,18 +9,18 @@ module DotDiff
 
     def hide
       elements.each do |xpath|
-        driver.execute_script(script(xpath, 'hidden'))
+        driver.execute_script(script(xpath, :hidden))
       end
     end
 
     def show
       elements.each do |xpath|
-        driver.execute_script(script(xpath, ''))
+        driver.execute_script(script(xpath, :''))
       end
     end
 
     def script(xpath, visibility)
-      xpath += if visibility == 'hidden'
+      xpath += if visibility == :hidden
         "[not(contains(@style, 'visibility'))]"
       else
         "[contains(@style, 'visibility: hidden')]"
