@@ -79,7 +79,7 @@ RSpec.describe DotDiff::Snapshot do
     it 'calls save_screenshot with temporary location' do
       expect(subject).to receive(:fullscreen_file).and_return('/tmp/T/basefile.png').once
       expect(subject.page).to receive(:save_screenshot).with('/tmp/T/basefile.png').once
-      subject.capture_from_browser(true)
+      subject.capture_from_browser(false)
     end
 
     context 'use_custom_screenshot is true' do

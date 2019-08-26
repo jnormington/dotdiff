@@ -16,7 +16,7 @@ module DotDiff
   class << self
     attr_accessor :resave_base_image, :failure_image_path,
       :image_store_path, :overwrite_on_resave, :xpath_elements_to_hide,
-      :hide_elements_on_non_full_screen_screenshot, :max_wait_time
+      :hide_elements_on_non_full_screen_screenshot
 
     attr_writer :image_magick_options, :pixel_threshold, :image_magick_diff_bin
 
@@ -46,10 +46,6 @@ module DotDiff
 
     def pixel_threshold
       @pixel_threshold ||= 100
-    end
-
-    def max_wait_time
-      @max_wait_time || Capybara.default_max_wait_time
     end
   end
 end

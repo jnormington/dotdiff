@@ -83,23 +83,4 @@ RSpec.describe 'Dotdiff configuration' do
       expect(subject.xpath_elements_to_hide).to eq elems
     end
   end
-
-  describe '#default_max_wait_time' do
-    context 'when dotdiff max wait time is set' do
-      before { subject.instance_variable_set('@max_wait_time', 18) }
-
-      it 'returns the Dotdiff set time' do
-        expect(subject.max_wait_time).to eq 18
-      end
-    end
-
-    context 'when dotdiff wait time not set' do
-      before { subject.instance_variable_set('@max_wait_time', nil) }
-
-      it 'returns the capybara default max wait time' do
-        expect(Capybara).to receive(:default_max_wait_time).and_return(8).once
-        expect(subject.max_wait_time).to eq 8
-      end
-    end
-  end
 end
