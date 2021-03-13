@@ -1,11 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 class MockDriver
-  def execute_script(str)
-  end
+  def execute_script(str); end
 
-  def evaluate_script(str)
-  end
+  def evaluate_script(str); end
 end
 
 RSpec.describe 'DotDiff::ElementHandler' do
@@ -13,9 +13,9 @@ RSpec.describe 'DotDiff::ElementHandler' do
 
   before do
     allow(DotDiff).to receive(:xpath_elements_to_hide).and_return([
-      "//nav[@class='master-opt']",
-      "id('user-links')"
-    ])
+                                                                    "//nav[@class='master-opt']",
+                                                                    "id('user-links')"
+                                                                  ])
   end
 
   describe '#hide' do
@@ -71,8 +71,8 @@ RSpec.describe 'DotDiff::ElementHandler' do
     end
 
     it 'returns the user set value xpath_elements_to_hide' do
-      allow(DotDiff).to receive(:xpath_elements_to_hide).and_return(['blah', 'blue'])
-      expect(subject.elements).to eq ['blah', 'blue']
+      allow(DotDiff).to receive(:xpath_elements_to_hide).and_return(%w[blah blue])
+      expect(subject.elements).to eq %w[blah blue]
     end
   end
 end

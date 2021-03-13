@@ -1,17 +1,21 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe DotDiff::Snapshot do
-  let(:options) {{
-    filename: 'CancellationDialog',
-    subdir: 'testy',
-    page: MockPage.new
-  }}
+  let(:options) do
+    {
+      filename: 'CancellationDialog',
+      subdir: 'testy',
+      page: MockPage.new
+    }
+  end
 
   subject { DotDiff::Snapshot.new(options) }
 
   before do
     allow(Dir).to receive(:tmpdir).and_return('/tmp/T')
-    allow(DotDiff).to receive(:failure_image_path).and_return("/tmp/failures")
+    allow(DotDiff).to receive(:failure_image_path).and_return('/tmp/failures')
     allow(DotDiff).to receive(:image_store_path).and_return('/home/se/images')
   end
 
@@ -107,15 +111,15 @@ RSpec.describe DotDiff::Snapshot do
     end
   end
 
-  %w(fullscreen cropped).each do |version|
+  %w[fullscreen cropped].each do |version|
     describe "#resave_base_file with #{version}" do
       let(:base_file) { '/home/se/images/testy/CancellationDialog.png' }
       let(:fullscreen_file) { '/tmp/T/testy/CancellationDialog.png' }
       let(:cropped_file) { '/tmp/T/testy/CancellationDialog_cropped.png' }
-      let(:opts) {{ force: true }}
+      let(:opts) { { force: true } }
 
       before do
-        allow(File).to receive(:exists?).and_return(true)
+        allow(File).to receive(:exist?).and_return(true)
         expect(FileUtils).to receive(:mkdir_p).with(DotDiff.image_store_path + '/testy')
       end
 
@@ -128,7 +132,7 @@ RSpec.describe DotDiff::Snapshot do
 
         it 'calls FileUtils with force option' do
           allow(subject).to receive(:capture_from_browser).with(true).and_return(subject.fullscreen_file)
-          expect(FileUtils).to receive(:mv).with(self.send("#{version}_file"), base_file, opts)
+          expect(FileUtils).to receive(:mv).with(send("#{version}_file"), base_file, opts)
 
           subject.send(:resave_base_file, version)
         end
@@ -140,13 +144,13 @@ RSpec.describe DotDiff::Snapshot do
         let(:altered_file) { "#{base_file}.r2" }
 
         it 'calls FileUtils with an altered file name destination' do
-          expect(FileUtils).to receive(:mv).with(self.send("#{version}_file"), altered_file, opts)
+          expect(FileUtils).to receive(:mv).with(send("#{version}_file"), altered_file, opts)
           subject.send(:resave_base_file, version)
         end
 
         it 'creates base_file without r2 when original file doesnt exist' do
-          allow(File).to receive(:exists?).and_return(false)
-          expect(FileUtils).to receive(:mv).with(self.send("#{version}_file"), base_file, opts)
+          allow(File).to receive(:exist?).and_return(false)
+          expect(FileUtils).to receive(:mv).with(send("#{version}_file"), base_file, opts)
           subject.send(:resave_base_file, version)
         end
       end

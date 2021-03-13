@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe DotDiff::ElementMeta do
@@ -34,7 +36,7 @@ RSpec.describe DotDiff::ElementMeta do
   end
 
   describe DotDiff::ElementMeta::Rectangle do
-    subject { DotDiff::ElementMeta::Rectangle.new(mock_page,rect) }
+    subject { DotDiff::ElementMeta::Rectangle.new(mock_page, rect) }
 
     let(:rect) do
       {
@@ -55,7 +57,7 @@ RSpec.describe DotDiff::ElementMeta do
     describe '#method_missing' do
       before { allow(subject).to receive(:rect).and_return(rect) }
       it 'raise exception when not a rect name' do
-        expect{ subject.haha }.to raise_error(NoMethodError)
+        expect { subject.haha }.to raise_error(NoMethodError)
       end
 
       it 'returns the rectangle size correctly' do
@@ -72,7 +74,7 @@ RSpec.describe DotDiff::ElementMeta do
       it 'returns a string with xpath' do
         expect(subject.send(:js_query, xpath)).to eq(
           "document.evaluate(\"#{xpath}\", document, null, "\
-          "XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.getBoundingClientRect()"
+          'XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.getBoundingClientRect()'
         )
       end
     end

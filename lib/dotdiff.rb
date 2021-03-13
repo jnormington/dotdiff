@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dotdiff/version'
 
 require 'shellwords'
@@ -14,11 +16,10 @@ require 'dotdiff/comparer'
 
 module DotDiff
   class << self
-    attr_accessor :resave_base_image, :failure_image_path,
-      :image_store_path, :overwrite_on_resave, :xpath_elements_to_hide,
-      :hide_elements_on_non_full_screen_screenshot
+    attr_accessor :failure_image_path, :image_store_path, :overwrite_on_resave
 
-    attr_writer :image_magick_options, :pixel_threshold, :image_magick_diff_bin
+    attr_writer :image_magick_options, :pixel_threshold, :image_magick_diff_bin,
+                :resave_base_image, :xpath_elements_to_hide, :hide_elements_on_non_full_screen_screenshot
 
     def configure
       yield self

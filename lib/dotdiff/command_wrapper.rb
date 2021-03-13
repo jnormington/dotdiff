@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'shellwords'
 
 module DotDiff
   class CommandWrapper
-    attr_reader :message
+    attr_reader :message, :ran_checks
 
     def run(base_image, new_image, diff_image_path)
       output = run_command(base_image, new_image, diff_image_path)
@@ -18,7 +20,7 @@ module DotDiff
           @failed = true
           @message = "Images are #{pixels} pixels different"
         end
-      rescue ArgumentError => e
+      rescue ArgumentError
         @failed = true
         @message = output
       end
@@ -30,10 +32,6 @@ module DotDiff
 
     def failed?
       @ran_checks && @failed
-    end
-
-    def ran_checks
-      @ran_checks
     end
 
     private

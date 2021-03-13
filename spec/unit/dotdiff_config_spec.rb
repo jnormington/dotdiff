@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'Dotdiff configuration' do
@@ -9,7 +11,7 @@ RSpec.describe 'Dotdiff configuration' do
   end
 
   before(:each) do
-    user_methods.each {|mth| DotDiff.instance_variable_set("@#{mth}", nil)}
+    user_methods.each { |mth| DotDiff.instance_variable_set("@#{mth}", nil) }
   end
 
   describe '#resave_base_image' do
@@ -67,13 +69,13 @@ RSpec.describe 'Dotdiff configuration' do
     let(:path) { '/tmp/failed_image_store' }
 
     it 'returns the user set value' do
-      DotDiff.failure_image_path   = path
+      DotDiff.failure_image_path = path
       expect(subject.failure_image_path).to eq path
     end
   end
 
   describe '#xpath_elements_to_hide' do
-    let(:elems) { ["document.findElementByid('f')", ""] }
+    let(:elems) { ["document.findElementByid('f')", ''] }
     it 'defaults to an empty array' do
       expect(subject.xpath_elements_to_hide).to eq []
     end

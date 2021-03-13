@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dotdiff'
 require 'capybara/dsl'
 

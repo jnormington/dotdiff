@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 class Snappy
@@ -13,9 +15,12 @@ class Snappy
 end
 
 class MockRMagick
-  def crop!(x,y,w,h); end
-  def write(file);  end
+  def crop!(xxx, yyy, www, hhh); end
+
+  def write(file); end
+
   def columns; end
+
   def rows; end
 end
 
@@ -42,13 +47,13 @@ RSpec.describe DotDiff::Image::Cropper do
       expect(subject).to receive(:width).with(element, mock_png).and_return(13).once
       expect(subject).to receive(:height).with(element, mock_png).and_return(14).once
 
-      expect(mock_png).to receive(:crop!).with(1,2,13,14).once
+      expect(mock_png).to receive(:crop!).with(1, 2, 13, 14).once
       expect(mock_png).to receive(:write).with('/tmp/T/cropped.png').once
     end
 
     it 'calls load_image crop and save' do
       allow(rectangle).to receive(:rect).and_return(
-        {'top' => 2, 'left' => 1, 'height' => 4, 'width' => 3}
+        { 'top' => 2, 'left' => 1, 'height' => 4, 'width' => 3 }
       )
 
       subject.crop_and_resave(element)
@@ -56,7 +61,7 @@ RSpec.describe DotDiff::Image::Cropper do
 
     it 'rounds down the x and y values received from the browser' do
       allow(rectangle).to receive(:rect).and_return(
-        {'top' => 2.3, 'left' => 1.7, 'height' => 4.5, 'width' => 3.6}
+        { 'top' => 2.3, 'left' => 1.7, 'height' => 4.5, 'width' => 3.6 }
       )
 
       subject.crop_and_resave(element)
@@ -67,7 +72,7 @@ RSpec.describe DotDiff::Image::Cropper do
     before { allow(element.rectangle).to receive(:rect).and_return(rect) }
 
     context 'when element height is larger than the image height' do
-      let(:rect) {{ 'top' => -180, 'left' => 0, 'width' => 800, 'height' => 1400 }}
+      let(:rect) { { 'top' => -180, 'left' => 0, 'width' => 800, 'height' => 1400 } }
 
       it 'returns the image height minus the top point' do
         allow(mock_png).to receive(:rows).and_return(1200)
@@ -76,7 +81,7 @@ RSpec.describe DotDiff::Image::Cropper do
     end
 
     context 'when element height is smaller than the image height' do
-      let(:rect) {{ 'top' => -180, 'left' => 0, 'width' => 500, 'height' => 800 }}
+      let(:rect) { { 'top' => -180, 'left' => 0, 'width' => 500, 'height' => 800 } }
 
       it 'returns the element height' do
         allow(mock_png).to receive(:rows).and_return(1200)
@@ -89,7 +94,7 @@ RSpec.describe DotDiff::Image::Cropper do
     before { allow(element.rectangle).to receive(:rect).and_return(rect) }
 
     context 'when element width is larger than the image width' do
-      let(:rect) {{ 'top' => -180, 'left' => -30, 'width' => 731, 'height' => 1200 }}
+      let(:rect) { { 'top' => -180, 'left' => -30, 'width' => 731, 'height' => 1200 } }
 
       it 'returns the image width minus the left point' do
         allow(mock_png).to receive(:columns).and_return(700)
@@ -98,7 +103,7 @@ RSpec.describe DotDiff::Image::Cropper do
     end
 
     context 'when element width is smaller than the image width' do
-      let(:rect) {{ 'top' => -180, 'left' => -20, 'width' => 800, 'height' => 800 }}
+      let(:rect) { { 'top' => -180, 'left' => -20, 'width' => 800, 'height' => 800 } }
 
       it 'returns the element width' do
         allow(mock_png).to receive(:columns).and_return(850)

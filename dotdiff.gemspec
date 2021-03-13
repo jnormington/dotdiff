@@ -13,8 +13,10 @@ Gem::Specification.new do |spec|
   spec.email         = ['jnormington@users.noreply.github.com']
   spec.platform      = 'java' if is_java
 
-  spec.summary       = 'Image regression wrapper for Capybara and RSpec using image magick supporting both MRI and JRuby versions'
-  spec.description   = [spec.summary, "which supports snap shoting both full page and specific elements on a page where text checks isn't enough"].join(' ')
+  spec.summary       = 'Image regression wrapper for Capybara and RSpec using image'\
+                        'magick supporting both MRI and JRuby versions'
+  spec.description   = [spec.summary, 'which supports snap shoting both full page and'\
+                        "specific elements on a page where text checks isn't enough"].join(' ')
   spec.homepage      = 'https://github.com/jnormington/dotdiff'
   spec.license       = 'MIT'
 

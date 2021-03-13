@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module DotDiff
   class Snapshot
     include Image::Cropper
 
-    attr_reader :base_filename, :subdir, :rootdir, :page, :use_custom_screenshot
+    attr_reader :subdir, :rootdir, :page, :use_custom_screenshot
 
-    IMAGE_EXT = 'png'.freeze
+    IMAGE_EXT = 'png'
 
     def initialize(options = {})
       opts = { rootdir: DotDiff.image_store_path }.merge(Hash(options))
@@ -12,23 +14,23 @@ module DotDiff
       @subdir = opts[:subdir].to_s
       @rootdir = opts[:rootdir].to_s
       @page = opts[:page]
-      @fullscreen = opts[:fullscreen_file]
+      @fullscreen_file = opts[:fullscreen_file]
       @use_custom_screenshot = opts[:use_custom_screenshot]
     end
 
     def fullscreen_file
-      @fullscreen ||= File.join(Dir.tmpdir, subdir, base_filename)
+      @fullscreen_file ||= File.join(Dir.tmpdir, subdir, base_filename)
     end
 
     def cropped_file
-      @cropped ||= File.join(Dir.tmpdir, subdir, "#{base_filename(false)}_cropped.#{IMAGE_EXT}")
+      @cropped_file ||= File.join(Dir.tmpdir, subdir, "#{base_filename(false)}_cropped.#{IMAGE_EXT}")
     end
 
     def basefile
       File.join(rootdir, subdir.to_s, base_filename)
     end
 
-    def base_filename(with_extension=true)
+    def base_filename(with_extension = true)
       filename  = File.basename(@base_filename)
       extension = File.extname(filename)
       rtn_file  = @base_filename
@@ -47,7 +49,7 @@ module DotDiff
     end
 
     def new_file
-      File.join(failure_path, "#{base_filename(false)}.new.#{IMAGE_EXT}" )
+      File.join(failure_path, "#{base_filename(false)}.new.#{IMAGE_EXT}")
     end
 
     def diff_file
@@ -81,10 +83,10 @@ module DotDiff
     def resave_base_file(version)
       FileUtils.mkdir_p(File.join(DotDiff.image_store_path, subdir))
 
-      if !File.exists?(basefile) || DotDiff.overwrite_on_resave
-        FileUtils.mv(self.send("#{version}_file"), basefile, force: true)
+      if !File.exist?(basefile) || DotDiff.overwrite_on_resave
+        FileUtils.mv(send("#{version}_file"), basefile, force: true)
       else
-        FileUtils.mv(self.send("#{version}_file"), "#{basefile}.r2", force: true)
+        FileUtils.mv(send("#{version}_file"), "#{basefile}.r2", force: true)
       end
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'capybara/dsl'
 
@@ -42,7 +44,7 @@ RSpec.describe DotDiff::Comparer do
       expect(element).to receive(:is_a?).with(Capybara::Session).and_return(false)
       expect(element).to receive(:is_a?).with(Capybara::Node::Base).and_return(false)
 
-      expect{ subject.result }.to raise_error(
+      expect { subject.result }.to raise_error(
         ArgumentError, 'Unknown element class received: MocksHelper::MockElement'
       )
     end
@@ -57,10 +59,10 @@ RSpec.describe DotDiff::Comparer do
 
         expect(snapshot).to receive(:capture_from_browser).with(true).once
         expect(snapshot).to receive(:crop_and_resave).with(element_meta).once
-        expect(File).to receive(:exists?).with(snapshot.basefile).and_return(true)
+        expect(File).to receive(:exist?).with(snapshot.basefile).and_return(true)
         expect(subject).to receive(:compare).with(
-          snapshot.cropped_file).and_return([false, 'z']
-        ).once
+          snapshot.cropped_file
+        ).and_return([false, 'z']).once
 
         expect(subject.send(:compare_element, element_meta)).to eq([false, 'z'])
       end
@@ -72,7 +74,7 @@ RSpec.describe DotDiff::Comparer do
 
         expect(snapshot).to receive(:capture_from_browser).with(false).once
         expect(snapshot).to receive(:crop_and_resave).with(element_meta).once
-        expect(File).to receive(:exists?).with(snapshot.basefile).and_return(false)
+        expect(File).to receive(:exist?).with(snapshot.basefile).and_return(false)
         expect(snapshot).to receive(:resave_cropped_file).once
 
         expect(subject.send(:compare_element, element_meta)).to eq(
@@ -88,10 +90,10 @@ RSpec.describe DotDiff::Comparer do
         expect(DotDiff).not_to receive(:hide_elements_on_non_full_screen_screenshot)
 
         expect(snapshot).to receive(:capture_from_browser).with(true).once
-        expect(File).to receive(:exists?).with(snapshot.basefile).and_return(true)
+        expect(File).to receive(:exist?).with(snapshot.basefile).and_return(true)
         expect(subject).to receive(:compare).with(
-          snapshot.fullscreen_file).and_return([false, 'FAIL: haha']
-        ).once
+          snapshot.fullscreen_file
+        ).and_return([false, 'FAIL: haha']).once
 
         expect(subject.send(:compare_page)).to eq([false, 'FAIL: haha'])
       end
@@ -103,7 +105,7 @@ RSpec.describe DotDiff::Comparer do
 
         expect(snapshot).to receive(:capture_from_browser).with(true).once
         expect(snapshot).to receive(:resave_fullscreen_file).once
-        expect(File).to receive(:exists?).with(snapshot.basefile).and_return(false)
+        expect(File).to receive(:exist?).with(snapshot.basefile).and_return(false)
 
         expect(subject.send(:compare_page)).to eq([true, '/home/se/images/test.png'])
       end

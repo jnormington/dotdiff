@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DotDiff
   class ElementMeta
     attr_reader :page, :element_xpath
@@ -19,22 +21,26 @@ module DotDiff
       end
 
       def method_missing(name, *args, &block)
-        if %w(x y width height).include?(name.to_s)
+        if %w[x y width height].include?(name.to_s)
           case name
-            when :x then rect['left']
-            when :y then rect['top']
-            else rect[name.to_s]
+          when :x then rect['left']
+          when :y then rect['top']
+          else rect[name.to_s]
           end
         else
           super
         end
       end
 
+      def respond_to_missing?(name, _include_private = false)
+        %w[x y width height].include?(name.to_s) || super
+      end
+
       private
 
       def js_query(xpath)
         "document.evaluate(\"#{xpath}\", document, null, XPathResult."\
-        "FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.getBoundingClientRect()"
+        'FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.getBoundingClientRect()'
       end
 
       def get_rect(page, xpath)

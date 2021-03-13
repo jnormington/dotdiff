@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DotDiff
   class Comparer
     attr_reader :element, :page, :snapshot
@@ -24,7 +26,7 @@ module DotDiff
       snapshot.capture_from_browser(DotDiff.hide_elements_on_non_full_screen_screenshot)
       snapshot.crop_and_resave(element_meta)
 
-      if !File.exists?(snapshot.basefile)
+      if !File.exist?(snapshot.basefile)
         snapshot.resave_cropped_file
         [true, snapshot.basefile]
       else
@@ -35,7 +37,7 @@ module DotDiff
     def compare_page
       snapshot.capture_from_browser(true)
 
-      if !File.exists?(snapshot.basefile)
+      if !File.exist?(snapshot.basefile)
         snapshot.resave_fullscreen_file
         [true, snapshot.basefile]
       else

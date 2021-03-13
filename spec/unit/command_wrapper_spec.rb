@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe DotDiff::CommandWrapper do
@@ -12,7 +14,9 @@ RSpec.describe DotDiff::CommandWrapper do
     let(:base_img) { '/home/test/image 12343.png' }
     let(:new_img)  { '/home/test/img_1234 3.png' }
     let(:diff_img) { '/img/test 1.diff.png' }
-    let(:escaped_cmd) { "/bin/compare -fuzz 5% /home/test/image\\ 12343.png /home/test/img_1234\\ 3.png /img/test\\ 1.diff.png 2>&1" }
+    let(:escaped_cmd) do
+      '/bin/compare -fuzz 5% /home/test/image\\ 12343.png /home/test/img_1234\\ 3.png /img/test\\ 1.diff.png 2>&1'
+    end
 
     it 'escapes both base and new file names and contains the additional options' do
       expect(subject.send(:command, base_img, new_img, diff_img)).to eq escaped_cmd
@@ -49,7 +53,7 @@ RSpec.describe DotDiff::CommandWrapper do
     end
 
     context "when it doesn't return a number" do
-      let(:error) { "compare: Image width/height do not match" }
+      let(:error) { 'compare: Image width/height do not match' }
 
       before do
         allow(subject).to receive(:run_command).and_return(error)
@@ -63,7 +67,7 @@ RSpec.describe DotDiff::CommandWrapper do
     end
 
     context 'when the program doesnt exist' do
-      let(:error) { "No such file or directory - /bin/compare" }
+      let(:error) { 'No such file or directory - /bin/compare' }
 
       it 'raises an exception when program not found' do
         allow(subject).to receive(:run_command).and_return(error)
