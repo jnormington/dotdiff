@@ -35,6 +35,8 @@ RSpec.describe 'Dotdiff configuration' do
   describe '#image_magick_options' do
     let(:opts) { '-fuzz 10% -metric phash' }
 
+    after { DotDiff.image_magick_options = nil }
+
     it 'returns the default options' do
       expect(subject.image_magick_options).to eq '-fuzz 5% -metric AE'
     end
@@ -46,6 +48,8 @@ RSpec.describe 'Dotdiff configuration' do
   end
 
   describe 'pixel_threshold' do
+    after { DotDiff.pixel_threshold = nil }
+
     it 'returns the default 100 pixels' do
       expect(subject.pixel_threshold).to eq 100
     end
@@ -59,6 +63,8 @@ RSpec.describe 'Dotdiff configuration' do
   describe '#image_store_path' do
     let(:path) { '/tmp/image_store_path' }
 
+    after { DotDiff.image_store_path = nil }
+
     it 'returns the user set value' do
       DotDiff.image_store_path = path
       expect(subject.image_store_path).to eq path
@@ -67,6 +73,8 @@ RSpec.describe 'Dotdiff configuration' do
 
   describe '#failure_image_path' do
     let(:path) { '/tmp/failed_image_store' }
+
+    after { DotDiff.failure_image_path = nil }
 
     it 'returns the user set value' do
       DotDiff.failure_image_path = path
