@@ -2,8 +2,6 @@
 
 module DotDiff
   class ThresholdCalculator
-    class UnknownTypeError < StandardError; end
-
     PIXEL = 'pixel'
     PERCENT = 'percent'
 

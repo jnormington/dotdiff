@@ -51,7 +51,7 @@ RSpec.describe 'Dotdiff configuration' do
     after { DotDiff.pixel_threshold = nil }
 
     it 'returns the default 100 pixels' do
-      expect(subject.pixel_threshold).to eq 100
+      expect(subject.pixel_threshold).to eq({ type: 'pixel', value: 100 })
     end
 
     it 'returns the user defined value' do
@@ -91,6 +91,70 @@ RSpec.describe 'Dotdiff configuration' do
     it 'returns the user elements' do
       DotDiff.xpath_elements_to_hide = elems
       expect(subject.xpath_elements_to_hide).to eq elems
+    end
+  end
+
+  describe '#pixel_threshold' do
+    after { DotDiff.pixel_threshold = nil }
+
+    context 'when value not a hash' do
+      it 'raises a deprecation warning' do
+        expect(Kernel).to receive(:warn).with(
+          '[Dotdiff deprecation] Pass a hash options instead of integer to support pixel/percentage threshold'
+        ).twice
+
+        DotDiff.pixel_threshold = 120
+      end
+
+      it 'sets the value' do
+        DotDiff.pixel_threshold = 120
+        expect(DotDiff.pixel_threshold).to eq 120
+      end
+    end
+
+    context 'when type is pixel' do
+      let(:config) { DotDiff.pixel_threshold = { type: 'pixel', value: 120 } }
+
+      it 'sets the config value' do
+        DotDiff.pixel_threshold = config
+        expect(DotDiff.pixel_threshold).to eq config
+      end
+    end
+
+    context 'when type is percent' do
+      let(:config) { DotDiff.pixel_threshold = { type: 'percent', value: 0.9999 } }
+
+      it 'sets the config value' do
+        DotDiff.pixel_threshold = config
+        expect(DotDiff.pixel_threshold).to eq config
+      end
+    end
+
+    context 'when type is percent' do
+      let(:config) { DotDiff.pixel_threshold = { type: 'percent', value: 1 } }
+
+      it 'sets the config value' do
+        DotDiff.pixel_threshold = config
+        expect(DotDiff.pixel_threshold).to eq config
+      end
+    end
+
+    context 'when type is percent and value over 1' do
+      let(:config) { DotDiff.pixel_threshold = { type: 'percent', value: 1.01 } }
+
+      it 'raises an error' do
+        expect do
+          DotDiff.pixel_threshold = config
+        end.to raise_error DotDiff::InvalidValueError, 'Percent value should be a float between 0 and 1'
+      end
+    end
+
+    context 'when value not an invalid option' do
+      it 'raises an exception' do
+        expect do
+          DotDiff.pixel_threshold = { type: 'decimal', value: 120 }
+        end.to raise_error(DotDiff::UnknownTypeError)
+      end
     end
   end
 end

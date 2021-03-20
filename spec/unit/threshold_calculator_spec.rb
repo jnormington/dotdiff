@@ -38,7 +38,7 @@ RSpec.describe DotDiff::ThresholdCalculator do
       subject { described_class.new({ type: 'decimal', value: 100 }, 1, 1) }
 
       it 'raises an error' do
-        expect { subject.under_threshold? }.to raise_error(DotDiff::ThresholdCalculator::UnknownTypeError)
+        expect { subject.under_threshold? }.to raise_error(DotDiff::UnknownTypeError)
       end
     end
   end
