@@ -4,25 +4,17 @@ require 'shellwords'
 
 module DotDiff
   class CommandWrapper
-    attr_reader :message, :ran_checks
+    attr_reader :message, :pixels
 
     def run(base_image, new_image, diff_image_path)
       output = run_command(base_image, new_image, diff_image_path)
-
-      @ran_checks = true
+      @message = output
 
       begin
-        pixels = Float(output)
-
-        if pixels && pixels <= DotDiff.pixel_threshold
-          @failed = false
-        else
-          @failed = true
-          @message = "Images are #{pixels} pixels different"
-        end
+        @pixels = Float(output)
+        @failed = false
       rescue ArgumentError
         @failed = true
-        @message = output
       end
     end
 
@@ -31,12 +23,11 @@ module DotDiff
     end
 
     def failed?
-      @ran_checks && @failed
+      @failed
     end
 
     private
 
-    # For the tests
     def run_command(base_image, new_image, diff_image_path)
       `#{command(base_image, new_image, diff_image_path)}`.strip
     end
