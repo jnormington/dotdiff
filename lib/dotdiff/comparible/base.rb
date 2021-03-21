@@ -14,37 +14,42 @@ module DotDiff
 
       private
 
-      attr_reader :snapshot, :element_meta
+      attr_reader :snapshot, :element_meta, :new_image
 
       def compare(compare_to_image)
-        cmd = CommandWrapper.new
-        cmd.run(snapshot.basefile, compare_to_image, snapshot.diff_file)
+        @new_image = compare_to_image
+        return [false, img_container.dimensions_mismatch_msg] unless img_container.both_images_same_dimensions?
 
+        cmd = CommandWrapper.new
+        cmd.run(snapshot.basefile, new_image, snapshot.diff_file)
         return [cmd.passed?, cmd.message] if cmd.failed?
 
-        calc = calculator(cmd.pixels)
+        calculate_result(cmd.pixels)
+      end
+
+      def calculate_result(diff_pixels)
+        calc = DotDiff::ThresholdCalculator.new(
+          DotDiff.pixel_threshold,
+          img_container.total_pixels,
+          diff_pixels
+        )
+
         passed = calc.under_threshold?
-        write_failure_imgs(compare_to_image) if !passed && DotDiff.failure_image_path
+        write_failure_imgs if !passed && DotDiff.failure_image_path
 
         [passed, calc.message]
       end
 
-      def calculator(diff_pixels)
-        DotDiff::ThresholdCalculator.new(
-          DotDiff.pixel_threshold,
-          basefile_pixels,
-          diff_pixels
+      def img_container
+        @img_container ||= DotDiff::Image::Container.new(
+          snapshot.basefile,
+          new_image
         )
       end
 
-      def basefile_pixels
-        img = Magick::Image.read(snapshot.basefile).first
-        img.rows * img.columns
-      end
-
-      def write_failure_imgs(compare_to_image)
+      def write_failure_imgs
         FileUtils.mkdir_p(snapshot.failure_path)
-        FileUtils.mv(compare_to_image, snapshot.new_file, force: true)
+        FileUtils.mv(new_image, snapshot.new_file, force: true)
       end
     end
   end

@@ -11,6 +11,7 @@ require 'dotdiff/element_handler'
 
 require 'dotdiff/element_meta'
 require 'dotdiff/image/cropper'
+require 'dotdiff/image/container'
 require 'dotdiff/snapshot'
 
 require 'dotdiff/threshold_calculator'
