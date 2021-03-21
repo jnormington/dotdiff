@@ -51,7 +51,7 @@ In an initializer you can configure certain options example shown below within D
 ```ruby
 DotDiff.configure do |config|
   config.image_magick_diff_bin = `which compare`
-  config.pixel_threshold = 120
+  config.pixel_threshold = { type: 'percent', value: 0.04 }
   config.image_magick_options = '-metric AE'
   config.image_store_path = File.join('/home', 'user', 'images')
   config.xpath_elements_to_hide = ["id('main')"]
@@ -85,7 +85,7 @@ The only difference for the element specific is passing a specific element in th
 | xpath_elements_to_hide | When taking full page screenshots it will hide elements specified that might change each time and re-shows them after the screenshot.  It doesn't use this option for taking screenshots of specific elements.                                                                                                                                                                                                                                      | ["id('main')", "//div[contains(@class, 'formy'])[1]"] | []                             | No       |
 | hide_elements_on_non_full_screen_screenshot | When taking non full page screenshots whether to also hide elements using `xpath_elements_to_hide` or not hide anything at all                                                                                    | true | false                             | No       |
 | failure_image_path     | When a comparison occurs and the perceptual_diff binary returns a failure with the message. It will dump the new image taken for comparison to this directory.  If not supplied it will not move the images from the temporary location that it is generated at.                                                                                                                                                                                    | File.join('/home', 'user','failures')                 | nil                            | No       |
-| pixel_threshold       |  This validates the output from compare is within your specified threshold    | 120  | 100  | No      |
+| pixel_threshold       |  This validates the output from compare is within your specified threshold_config which supports pixel or percent value | { type: 'percent', value: 0.03 } | { type: 'pixel', value: 100 } | No      |
 | image_magick_options  |  This allows you to pass some custom options to image magick    | '-fuzz 10% -metric RSME'  | '-fuzz 5% -metric AE'  | No      |
 
 ## Contributing
