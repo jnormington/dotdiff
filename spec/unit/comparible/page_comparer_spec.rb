@@ -31,13 +31,40 @@ RSpec.describe DotDiff::Comparible::PageComparer do
       end
     end
 
+    context 'when the new and base image size are different' do
+      let(:container) do
+        instance_double(DotDiff::Image::Container,
+                        total_pixels: 2_073_600,
+                        both_images_same_dimensions?: false,
+                        dimensions_mismatch_msg: 'Some dimensions mismatch')
+      end
+
+      before do
+        expect(File).to receive(:exist?).with(snapshot.basefile).and_return(true)
+        expect(DotDiff::Image::Container).to receive(:new)
+          .with(snapshot.basefile, 'fullscrn_file').and_return(container)
+      end
+
+      it 'returns false with a message' do
+        expect(described_class.run(snapshot, nil)).to eq [false, 'Some dimensions mismatch']
+      end
+    end
+
     context 'when the basefile exists' do
+      let(:container) do
+        instance_double(DotDiff::Image::Container,
+                        total_pixels: 2_073_600,
+                        both_images_same_dimensions?: true)
+      end
+
       subject { described_class.run(snapshot, nil) }
 
       before do
         expect(DotDiff::CommandWrapper).to receive(:new).and_return(command_wrapper)
         expect(command_wrapper).to receive(:run).with('test', 'fullscrn_file', 'diff_file').and_return(nil)
         expect(File).to receive(:exist?).with(snapshot.basefile).and_return(true)
+        expect(DotDiff::Image::Container).to receive(:new)
+          .with(snapshot.basefile, 'fullscrn_file').and_return(container)
       end
 
       context 'and the command fails to return pixels' do
@@ -51,13 +78,8 @@ RSpec.describe DotDiff::Comparible::PageComparer do
       end
 
       context 'and the command succeeds' do
-        let(:magick_image) { instance_double(Magick::Image, rows: 1920, columns: 1080) }
         let(:command_wrapper) do
           instance_double(DotDiff::CommandWrapper, pixels: 321.0, passed?: true, failed?: false, message: '321')
-        end
-
-        before do
-          expect(Magick::Image).to receive(:read).with('test').and_return([magick_image])
         end
 
         context 'when pixels under threshold' do

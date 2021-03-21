@@ -43,13 +43,39 @@ RSpec.describe DotDiff::Comparible::ElementComparer do
       end
     end
 
+    context 'when the new and base image size are different' do
+      let(:container) do
+        instance_double(DotDiff::Image::Container,
+                        total_pixels: 2_073_600,
+                        both_images_same_dimensions?: false,
+                        dimensions_mismatch_msg: 'Some dimensions mismatch')
+      end
+
+      before do
+        expect(File).to receive(:exist?).with(snapshot.basefile).and_return(true)
+        expect(DotDiff::Image::Container).to receive(:new)
+          .with(snapshot.basefile, 'crped_file').and_return(container)
+      end
+
+      it 'returns false with a message' do
+        expect(described_class.run(snapshot, element_meta)).to eq [false, 'Some dimensions mismatch']
+      end
+    end
+
     context 'when the basefile exists' do
+      let(:container) do
+        instance_double(DotDiff::Image::Container,
+                        total_pixels: 2_073_600,
+                        both_images_same_dimensions?: true)
+      end
+
       subject { described_class.run(snapshot, element_meta) }
 
       before do
         expect(DotDiff::CommandWrapper).to receive(:new).and_return(command_wrapper)
         expect(command_wrapper).to receive(:run).with('test', 'crped_file', 'diff_file').and_return(nil)
         expect(File).to receive(:exist?).with(snapshot.basefile).and_return(true)
+        expect(DotDiff::Image::Container).to receive(:new).with(snapshot.basefile, 'crped_file').and_return(container)
       end
 
       context 'and the command fails to return pixels' do
@@ -68,11 +94,9 @@ RSpec.describe DotDiff::Comparible::ElementComparer do
                           pixels: 3210.0, passed?: true, failed?: false, message: '3210')
         end
 
-        let(:rmagick_image) { instance_double(Magick::Image, rows: 1920, columns: 1080) }
         let(:calc) { instance_double(DotDiff::ThresholdCalculator) }
 
         before do
-          expect(Magick::Image).to receive(:read).with('test').and_return([rmagick_image])
           expect(DotDiff).to receive(:pixel_threshold).and_return(100)
           expect(DotDiff::ThresholdCalculator).to receive(:new).with(100, 2_073_600, 3210.0).and_return(calc)
         end
