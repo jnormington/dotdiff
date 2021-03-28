@@ -12,12 +12,12 @@ RSpec.describe DotDiff::Comparible::ElementComparer do
     )
   end
 
-  before do
-    expect(snapshot).to receive(:crop_and_resave).with(element_meta)
-    expect(DotDiff).to receive(:hide_elements_on_non_full_screen_screenshot).and_return(true)
-  end
-
   describe '#run' do
+    before do
+      expect(snapshot).to receive(:crop_and_resave).with(element_meta)
+      expect(DotDiff).to receive(:hide_elements_on_non_full_screen_screenshot).and_return(true)
+    end
+
     it 'captures a screenshot from the browser' do
       allow(snapshot).to receive(:resave_cropped_file)
       expect(snapshot).to receive(:capture_from_browser).with(true).once
@@ -121,6 +121,14 @@ RSpec.describe DotDiff::Comparible::ElementComparer do
           end
         end
       end
+    end
+  end
+
+  describe '#new_image_path' do
+    subject { described_class.new(snapshot, element_meta) }
+
+    it 'returns cropped file path' do
+      expect(subject.new_image_path).to eq 'crped_file'
     end
   end
 end

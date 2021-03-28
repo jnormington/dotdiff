@@ -13,6 +13,10 @@ module DotDiff
           compare(snapshot.fullscreen_file)
         end
       end
+
+      def new_image_path
+        snapshot.fullscreen_file
+      end
     end
   end
 end

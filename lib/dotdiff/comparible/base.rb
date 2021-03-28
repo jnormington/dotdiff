@@ -14,14 +14,13 @@ module DotDiff
 
       private
 
-      attr_reader :snapshot, :element_meta, :new_image
+      attr_reader :snapshot, :element_meta
 
       def compare(compare_to_image)
-        @new_image = compare_to_image
         return [false, img_container.dimensions_mismatch_msg] unless img_container.both_images_same_dimensions?
 
         cmd = CommandWrapper.new
-        cmd.run(snapshot.basefile, new_image, snapshot.diff_file)
+        cmd.run(snapshot.basefile, new_image_path, snapshot.diff_file)
         return [cmd.passed?, cmd.message] if cmd.failed?
 
         calculate_result(cmd.pixels)
@@ -34,22 +33,14 @@ module DotDiff
           diff_pixels
         )
 
-        passed = calc.under_threshold?
-        write_failure_imgs if !passed && DotDiff.failure_image_path
-
-        [passed, calc.message]
+        [calc.under_threshold?, calc.message]
       end
 
       def img_container
         @img_container ||= DotDiff::Image::Container.new(
           snapshot.basefile,
-          new_image
+          new_image_path
         )
-      end
-
-      def write_failure_imgs
-        FileUtils.mkdir_p(snapshot.failure_path)
-        FileUtils.mv(new_image, snapshot.new_file, force: true)
       end
     end
   end
