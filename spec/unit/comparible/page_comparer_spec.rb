@@ -114,4 +114,12 @@ RSpec.describe DotDiff::Comparible::PageComparer do
       end
     end
   end
+
+  describe '#new_image_path' do
+    subject { described_class.new(snapshot, nil) }
+
+    it 'returns cropped file path' do
+      expect(subject.new_image_path).to eq 'fullscrn_file'
+    end
+  end
 end

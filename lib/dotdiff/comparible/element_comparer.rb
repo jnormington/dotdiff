@@ -14,6 +14,10 @@ module DotDiff
         end
       end
 
+      def new_image_path
+        snapshot.cropped_file
+      end
+
       private
 
       def take_snapshot_and_crop
