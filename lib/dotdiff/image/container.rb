@@ -9,19 +9,19 @@ module DotDiff
       end
 
       def both_images_same_dimensions?
-        base_image.rows == new_image.rows &&
-          base_image.columns == new_image.columns
+        base_image.width == new_image.width &&
+          base_image.height == new_image.height
       end
 
       def total_pixels
-        base_image.rows * base_image.columns
+        base_image.width * base_image.height
       end
 
       def dimensions_mismatch_msg
         <<~MSG
           Images are not the same dimensions to be compared
-          Base file: #{base_image.columns}x#{base_image.rows}
-          New file:  #{new_image.columns}x#{new_image.rows}
+          Base file: #{base_image.width}x#{base_image.height}
+          New file:  #{new_image.width}x#{new_image.height}
         MSG
       end
 
@@ -30,11 +30,11 @@ module DotDiff
       attr_reader :baseimg_file, :newimg_file
 
       def base_image
-        @base_image ||= Magick::Image.read(baseimg_file).first
+        @base_image ||= MiniMagick::Image.open(baseimg_file)
       end
 
       def new_image
-        @new_image ||= Magick::Image.read(newimg_file).first
+        @new_image ||= MiniMagick::Image.open(newimg_file)
       end
     end
   end
