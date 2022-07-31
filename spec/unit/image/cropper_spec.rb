@@ -14,25 +14,25 @@ class Snappy
   end
 end
 
-class MockRMagick
-  def crop!(xxx, yyy, www, hhh); end
+class MockMiniMagick
+  def crop(format); end
 
   def write(file); end
 
-  def columns; end
+  def width; end
 
-  def rows; end
+  def height; end
 end
 
 RSpec.describe DotDiff::Image::Cropper do
   subject { Snappy.new }
 
   let(:element) { DotDiff::ElementMeta.new(MockPage.new, MockElement.new) }
-  let(:mock_png) { MockRMagick.new }
+  let(:mock_png) { MockMiniMagick.new }
 
   describe '#load_image' do
-    it 'calls rgmagick image read' do
-      expect(Magick::Image).to receive(:read).with('/home/se/full.png').once.and_return([])
+    it 'calls minimagick image open' do
+      expect(MiniMagick::Image).to receive(:open).with('/home/se/full.png').once.and_return(nil)
       subject.send(:load_image, '/home/se/full.png')
     end
   end
@@ -47,7 +47,7 @@ RSpec.describe DotDiff::Image::Cropper do
       expect(subject).to receive(:width).with(element, mock_png).and_return(13).once
       expect(subject).to receive(:height).with(element, mock_png).and_return(14).once
 
-      expect(mock_png).to receive(:crop!).with(1, 2, 13, 14).once
+      expect(mock_png).to receive(:crop).with("13x14+1+2").once
       expect(mock_png).to receive(:write).with('/tmp/T/cropped.png').once
     end
 
@@ -75,7 +75,7 @@ RSpec.describe DotDiff::Image::Cropper do
       let(:rect) { { 'top' => -180, 'left' => 0, 'width' => 800, 'height' => 1400 } }
 
       it 'returns the image height minus the top point' do
-        allow(mock_png).to receive(:rows).and_return(1200)
+        allow(mock_png).to receive(:height).and_return(1200)
         expect(subject.height(element, mock_png)).to eq 1380
       end
     end
@@ -84,7 +84,7 @@ RSpec.describe DotDiff::Image::Cropper do
       let(:rect) { { 'top' => -180, 'left' => 0, 'width' => 500, 'height' => 800 } }
 
       it 'returns the element height' do
-        allow(mock_png).to receive(:rows).and_return(1200)
+        allow(mock_png).to receive(:height).and_return(1200)
         expect(subject.height(element, mock_png)).to eq 800
       end
     end
@@ -97,7 +97,7 @@ RSpec.describe DotDiff::Image::Cropper do
       let(:rect) { { 'top' => -180, 'left' => -30, 'width' => 731, 'height' => 1200 } }
 
       it 'returns the image width minus the left point' do
-        allow(mock_png).to receive(:columns).and_return(700)
+        allow(mock_png).to receive(:width).and_return(700)
         expect(subject.width(element, mock_png)).to eq 730
       end
     end
@@ -106,7 +106,7 @@ RSpec.describe DotDiff::Image::Cropper do
       let(:rect) { { 'top' => -180, 'left' => -20, 'width' => 800, 'height' => 800 } }
 
       it 'returns the element width' do
-        allow(mock_png).to receive(:columns).and_return(850)
+        allow(mock_png).to receive(:width).and_return(850)
         expect(subject.width(element, mock_png)).to eq 800
       end
     end

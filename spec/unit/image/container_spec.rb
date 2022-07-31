@@ -10,31 +10,31 @@ RSpec.describe DotDiff::Image::Container do
 
   describe '#both_image_same_dimensions' do
     before do
-      expect(Magick::Image).to receive(:read).with(baseimg_file).and_return([base_img])
-      expect(Magick::Image).to receive(:read).with(newimg_file).and_return([new_img])
+      expect(MiniMagick::Image).to receive(:open).with(baseimg_file).and_return(base_img)
+      expect(MiniMagick::Image).to receive(:open).with(newimg_file).and_return(new_img)
     end
 
-    context 'when both rows and columns match' do
-      let(:base_img) { instance_double(Magick::Image, rows: 100, columns: 120) }
-      let(:new_img) { instance_double(Magick::Image, rows: 100, columns: 120) }
+    context 'when both width and height match' do
+      let(:base_img) { instance_double(MiniMagick::Image, width: 120, height: 100) }
+      let(:new_img) { instance_double(MiniMagick::Image, width: 120, height: 100) }
 
       it 'returns true' do
         expect(subject.both_images_same_dimensions?).to eq true
       end
     end
 
-    context 'when the rows are mismatch' do
-      let(:base_img) { instance_double(Magick::Image, rows: 101, columns: 120) }
-      let(:new_img) { instance_double(Magick::Image, rows: 100, columns: 120) }
+    context 'when the height are mismatch' do
+      let(:base_img) { instance_double(MiniMagick::Image, width: 120, height: 101) }
+      let(:new_img) { instance_double(MiniMagick::Image, width: 120, height: 100) }
 
       it 'returns false' do
         expect(subject.both_images_same_dimensions?).to eq false
       end
     end
 
-    context 'when the rows are mismatch' do
-      let(:base_img) { instance_double(Magick::Image, rows: 100, columns: 120) }
-      let(:new_img) { instance_double(Magick::Image, rows: 100, columns: 121) }
+    context 'when the height are mismatch' do
+      let(:base_img) { instance_double(MiniMagick::Image, width: 120, height: 100) }
+      let(:new_img) { instance_double(MiniMagick::Image, width: 121, height: 100) }
 
       it 'returns false' do
         expect(subject.both_images_same_dimensions?).to eq false
@@ -43,10 +43,10 @@ RSpec.describe DotDiff::Image::Container do
   end
 
   describe '#total_pixels' do
-    let(:base_img) { instance_double(Magick::Image, rows: 1280, columns: 764) }
+    let(:base_img) { instance_double(MiniMagick::Image, width: 764, height: 1280) }
 
     before do
-      expect(Magick::Image).to receive(:read).with(baseimg_file).and_return([base_img])
+      expect(MiniMagick::Image).to receive(:open).with(baseimg_file).and_return(base_img)
     end
 
     it 'returns the total pixels' do
@@ -55,12 +55,12 @@ RSpec.describe DotDiff::Image::Container do
   end
 
   describe '#dimensions_mismatch_msg' do
-    let(:base_img) { instance_double(Magick::Image, rows: 100, columns: 120) }
-    let(:new_img) { instance_double(Magick::Image, rows: 100, columns: 121) }
+    let(:base_img) { instance_double(MiniMagick::Image, width: 120, height: 100) }
+    let(:new_img) { instance_double(MiniMagick::Image, width: 121, height: 100) }
 
     before do
-      expect(Magick::Image).to receive(:read).with(baseimg_file).and_return([base_img])
-      expect(Magick::Image).to receive(:read).with(newimg_file).and_return([new_img])
+      expect(MiniMagick::Image).to receive(:open).with(baseimg_file).and_return(base_img)
+      expect(MiniMagick::Image).to receive(:open).with(newimg_file).and_return(new_img)
     end
 
     it 'returns a message with the dimensions' do
