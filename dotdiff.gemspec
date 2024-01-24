@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'mini_magick', '>= 4.11.0'
+  spec.add_runtime_dependency 'mini_magick', '>= 4.12.0'
 
   spec.add_development_dependency 'bundler', '>= 2'
   spec.add_development_dependency 'capybara', '>= 2.6'
